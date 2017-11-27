@@ -1,0 +1,9 @@
+options:
+  gitlab_image:
+    type: string
+    description: 'The docker image of GitLab to install.'
+    default: 'gitlab/gitlab-ce:9.5.2-ce.0'
+  http_port:
+    type: string
+    description: 'The HTTP port'
+    default: '80'
