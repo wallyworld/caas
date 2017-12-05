@@ -3,7 +3,100 @@ options:
     type: string
     description: 'The docker image of GitLab to install.'
     default: 'gitlab/gitlab-ce:9.5.2-ce.0'
+  external_url:
+    type: string
+    description: 'The FQDN for your GitLab unit'
+    default:
   http_port:
     type: string
     description: 'The HTTP port'
     default: '80'
+  ssh_host:
+    type: string
+    description: 'Override the SSH Hostname'
+    default:
+  time_zone:
+      type: string
+      description: 'Override the default timezone(UTC)'
+      default:
+  email_from:
+    type: string
+    description: 'Email address used in the from field in mails send by GitLab'
+    default:
+  from_email_name:
+    type: string
+    description: 'The Name Used in the From field'
+    default:
+  reply_to_email:
+    type: string
+    description: 'Override the reply to email address'
+    default:
+  smtp_enable:
+    type: boolean
+    description: 'Enable SMTP sending'
+    default: true
+  smtp_address:
+    type: string
+    description: 'SMTP Address'
+    default:
+  smtp_port:
+    type: string
+    description: 'SMTP Port'
+    default:
+  smtp_user_name:
+    type: string
+    description: 'SMTP Username'
+    default:
+  smtp_password:
+    type: string
+    description: 'SMTP Password'
+    default:
+  smtp_domain:
+    type: string
+    description: 'SMTP Domain'
+    default:
+  smtp_enable_starttls_auto:
+    type: boolean
+    description: 'Enable STARTTLS automatically'
+    default: true
+  smtp_tls:
+    type: boolean
+    description: 'SMTP TLS'
+    default: false
+  incoming_email_enabled:
+    type: boolean
+    description: 'Accept incoming email'
+    default: false
+  incoming_email_address:
+    type: string
+    description: 'The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+                  The `+%{key}` placeholder is added after the user part, after a `+` character, before the `@`.'
+    default:
+  incoming_email_email:
+    type: string
+    description: 'Incoming email address'
+    default:
+  incoming_email_password:
+    type: string
+    description: 'Incoming email password'
+    default:
+  incoming_email_host:
+    type: string
+    description: 'Incoming Email Host'
+    default:
+  incoming_email_port:
+    type: string
+    description: 'Incoming Email Port'
+    default:
+  incoming_email_ssl:
+    type: boolean
+    description: 'Incoming Email SSL'
+    default: true
+  incoming_email_start_tls:
+    type: boolean
+    description: 'Incoming Email Start TLS'
+    default: false
+  incoming_email_mailbox_name:
+    type: string
+    description: 'Incoming mailbox name'
+    default:
