@@ -27,9 +27,7 @@ def init_config_states():
     from charms.reactive import set_state
     from charms.reactive import toggle_state
 
-    # TODO - we need config-get hook tool 
-    # hookenv.config()
-    config = hookenv.Config()
+    config = hookenv.config()
 
     config_defaults = {}
     config_defs = {}
@@ -53,9 +51,7 @@ def clear_config_states():
     from charmhelpers.core import hookenv, unitdata
     from charms.reactive import remove_state
 
-    # TODO - we need config-get hook tool 
-    # hookenv.config()
-    config = hookenv.Config()
+    config = hookenv.config()
 
     remove_state('config.changed')
     for opt in config.keys():
