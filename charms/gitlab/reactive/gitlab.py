@@ -21,20 +21,15 @@ def make_pod_spec():
     pod_spec_file = open('reactive/node_template.yaml')
     pod_spec_template = Template(pod_spec_file.read())
 
+    md = metadata()
     cfg = config()
-    d = {
-        'image': cfg.get('image'),
+    data = {
+        'name': md.get('name'),
+        'image': cfg.get('gitlab_image'),
         'port': cfg.get('http_port'),
         'config': compose_config(cfg)
     }
-    md = metadata()
-    d = {
-        'name': md.get('name'),
-        'image': 'gitlab/gitlab-ce:9.5.2-ce.0',
-        'port': 80,
-        'config': compose_config(cfg)
-    }
-    return pod_spec_template.substitute(d)
+    return pod_spec_template.substitute(data)
 
 
 def isfloat(value):
