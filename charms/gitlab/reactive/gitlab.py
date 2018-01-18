@@ -9,7 +9,7 @@ from string import Template
 def config_gitlab():
     status_set('maintenance', 'Configuring Gitlab')
 
-    spec = make_pod_spec()
+    spec = make_container_spec()
     log('set container spec:\n{}'.format(spec))
     container_spec_set(spec)
 
@@ -17,9 +17,9 @@ def config_gitlab():
     status_set('active', 'gitlab configured')
 
 
-def make_pod_spec():
-    pod_spec_file = open('reactive/node_template.yaml')
-    pod_spec_template = Template(pod_spec_file.read())
+def make_container_spec():
+    spec_file = open('reactive/spec_template.yaml')
+    pod_spec_template = Template(spec_file.read())
 
     md = metadata()
     cfg = config()

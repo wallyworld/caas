@@ -1,0 +1,7 @@
+name: $name
+image-name: $image
+ports:
+- container-port: $port
+  protocol: TCP
+config:
+  GITLAB_OMNIBUS_CONFIG: $config

@@ -1,9 +1,0 @@
-pod:
-  containers:
-  - name: $name
-    image: $image
-    ports:
-    - containerPort: $port
-    env:
-    - name: GITLAB_OMNIBUS_CONFIG
-      value: $config
