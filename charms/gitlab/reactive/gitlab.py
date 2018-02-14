@@ -27,7 +27,7 @@ def config_gitlab():
     status_set('maintenance', 'Creating Gitlab container')
 
 
-@when('db.master.available')
+@when('pgsql.master.available')
 @when_not('gitlab.db.related')
 def render_db_config(pgsql):
     log('pgsql available')
