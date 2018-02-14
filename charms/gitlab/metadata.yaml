@@ -1,9 +1,9 @@
 name: gitlab
-summary: Gitlab CE charm for Kubernetes.
+summary: Gitlab EE charm for Kubernetes.
 maintainers:
   - Juju Developers <juju@lists.ubuntu.com>
 description: |
-  A test CAAS charm to install and configure Gitlab CE.
+  A test CAAS charm to install and configure Gitlab EE.
   Gitlab is a Git repository management system similar
   to Github.
 tags:
@@ -12,5 +12,10 @@ tags:
 provides:
     website:
       interface: http
+requires:
+    pgsql:
+      interface: pgsql      
+    mysql:
+      interface: mysql      
 series:
    - kubernetes

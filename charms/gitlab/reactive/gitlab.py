@@ -1,23 +1,86 @@
 from charms.layer.hookenv import container_spec_set
-from charms.reactive import when_not, set_state
+from charms.reactive import when, when_not
+from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import log, metadata, status_set, config
 
 from string import Template
 
 
-@when_not('gitlab.configured')
-def config_gitlab():
-    status_set('maintenance', 'Configuring Gitlab')
+@when_not('gitlab.db.related')
+def gitlab_blocked():
+    status_set('blocked', 'Waiting for database')
 
-    spec = make_container_spec()
+
+@when_not('gitlab.configured')
+@when('gitlab.db.related')
+def config_gitlab():
+    dbcfg = get_state('gitlab.db.config')
+    log('got db {0}'.format(dbcfg))
+
+    status_set('maintenance', 'Configuring Gitlab container')
+
+    spec = make_container_spec(dbcfg)
     log('set container spec:\n{}'.format(spec))
     container_spec_set(spec)
 
-    set_state('gitlab.configured')
-    status_set('active', 'gitlab configured')
+    set_flag('gitlab.configured')
+    status_set('maintenance', 'Creating Gitlab container')
 
 
-def make_container_spec():
+@when('db.master.available')
+@when_not('gitlab.db.related')
+def render_db_config(pgsql):
+    log('pgsql available')
+    log('dbname {0}'.format(pgsql.master['dbname']))
+    log('host {0}'.format(pgsql.master['host']))
+    log('port {0}'.format(pgsql.master['port']))
+    log('user {0}'.format(pgsql.master['user']))
+    log('password {0}'.format(pgsql.master['password']))
+
+    set_flag('gitlab.db.config', make_db_config(
+        'postgresql',
+        pgsql.master['dbname'], pgsql.master['host'], pgsql.master['port'],
+        pgsql.master['user'], pgsql.master['password']))
+    set_flag('gitlab.db.related')
+
+
+@when('mysql.available')
+@when_not('gitlab.db.related')
+def mysql_changed(mysql):
+    log('mysql available')
+
+    log('dbname {0}'.format(mysql.database()))
+    log('host {0}'.format(mysql.host()))
+    log('port {0}'.format(mysql.port()))
+    log('user {0}'.format(mysql.user()))
+    log('password {0}'.format(mysql.password()))
+
+    set_flag('gitlab.db.config', make_db_config(
+        'mysql2',
+        mysql.database(), mysql.host(), mysql.port(),
+        mysql.user(), mysql.password()))
+    set_flag('gitlab.db.related')
+
+
+def make_db_config(dbadaptor, dbname, host, port, user, password):
+    cfg_terms = []
+
+    def add_config(cfg_terms, k, v):
+        cfg_terms += ['{}={}'.format(k, format_config_value(v))]
+
+    add_config(cfg_terms, 'postgresql[\'enable\']', False)
+    add_config(cfg_terms, 'gitlab_rails[\'db_adapter\']', dbadaptor)
+    add_config(cfg_terms, 'gitlab_rails[\'db_encoding\']', 'utf8')
+    add_config(cfg_terms, 'gitlab_rails[\'db_database\']', dbname)
+    add_config(cfg_terms, 'gitlab_rails[\'db_host\']', host)
+    add_config(cfg_terms, 'gitlab_rails[\'db_port\']', port)
+    add_config(cfg_terms, 'gitlab_rails[\'db_username\']', user)
+    add_config(cfg_terms, 'gitlab_rails[\'db_password\']', password)
+
+    return '; '.join(map(str, cfg_terms))
+
+
+def make_container_spec(dbcfg):
     spec_file = open('reactive/spec_template.yaml')
     pod_spec_template = Template(spec_file.read())
 
@@ -27,7 +90,7 @@ def make_container_spec():
         'name': md.get('name'),
         'image': cfg.get('gitlab_image'),
         'port': cfg.get('http_port'),
-        'config': compose_config(cfg)
+        'config': '; '.join([compose_config(cfg), dbcfg])
     }
     return pod_spec_template.substitute(data)
 

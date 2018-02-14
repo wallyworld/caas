@@ -1,1 +1,6 @@
-includes: ['layer:caas-base']
+includes: 
+  - "layer:caas-base"
+  - 'interface:pgsql'
+  - 'interface:juju-relation-mysql'
+  
+repo: https://github.com/wallyworld/caas.git
