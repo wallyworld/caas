@@ -1,0 +1,17 @@
+options:
+    mysql_image:
+        type: string
+        description: 'The docker image of mysql to install.'
+        default: 'mysql/mysql-server:latest'
+    mysql_port:
+        type: string
+        description: 'The mysql port'
+        default: '3306'  
+    query-cache-type:
+        default: "OFF"
+        type: string
+        description: Query cache is usually a good idea, but can hurt concurrency. Valid values are "OFF", "ON", or "DEMAND". http://dev.mysql.com/doc/refman/5.1/en/server-system-variables.html#sysvar_query_cache_type
+    query-cache-size:
+        default: 0
+        type: int
+        description: Override the computed version from dataset-size. Still works if query-cache-type is "OFF" since sessions can override the cache type setting on their own.
