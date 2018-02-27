@@ -40,6 +40,7 @@ EOF
 echo "$profile" | lxc profile edit juju-$model
 
 juju deploy $k8bundle
+juju config kubernetes-worker proxy-extra-args="proxy-mode=userspace"
 
 #read -p"Press return to watch deployment status, hit ctrl-C when everything's done." x
 watch -c juju status --color
