@@ -1,4 +1,4 @@
-from charms.layer.hookenv import container_spec_set
+from charms.layer.hookenv import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import log, metadata, status_set, config
@@ -19,9 +19,9 @@ def config_gitlab():
 
     status_set('maintenance', 'Configuring Gitlab container')
 
-    spec = make_container_spec(dbcfg)
-    log('set container spec:\n{}'.format(spec))
-    container_spec_set(spec)
+    spec = make_pod_spec(dbcfg)
+    log('set pod spec:\n{}'.format(spec))
+    pod_spec_set(spec)
 
     set_flag('gitlab.configured')
     status_set('maintenance', 'Creating Gitlab container')
@@ -80,7 +80,7 @@ def make_db_config(dbadaptor, dbname, host, port, user, password):
     return '; '.join(map(str, cfg_terms))
 
 
-def make_container_spec(dbcfg):
+def make_pod_spec(dbcfg):
     spec_file = open('reactive/spec_template.yaml')
     pod_spec_template = Template(spec_file.read())
 

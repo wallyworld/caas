@@ -1,23 +1,23 @@
-from charms.layer.hookenv import container_spec_set
+from charms.layer.hookenv import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import log, metadata, status_set, config,\
-    unit_private_ip, network_get, relation_id
+     network_get, relation_id
 
 
 @when_not('mysql.configured')
 def config_gitlab():
     status_set('maintenance', 'Configuring mysql container')
 
-    spec = make_container_spec()
-    log('set container spec:\n{}'.format(spec))
-    container_spec_set(spec)
+    spec = make_pod_spec()
+    log('set pod spec:\n{}'.format(spec))
+    pod_spec_set(spec)
 
     set_flag('mysql.configured')
     status_set('maintenance', 'Creating mysql container')
 
 
-def make_container_spec():
+def make_pod_spec():
     spec_file = open('reactive/spec_template.yaml')
     pod_spec_template = spec_file.read()
 
