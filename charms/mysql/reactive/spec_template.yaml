@@ -1,8 +1,8 @@
 containers:
   - name: %(name)s
-    image-name: %(image)s
+    image: %(image)s
     ports:
-    - container-port: %(port)s
+    - containerPort: %(port)s
       protocol: TCP
     config:
       MYSQL_ROOT_PASSWORD: %(root_password)s
@@ -11,7 +11,7 @@ containers:
       MYSQL_DATABASE: %(database)s
     files:
       - name: configurations
-        mount-path: /etc/mysql/conf.d
+        mountPath: /etc/mysql/conf.d
         files:
           custom_mysql.cnf: |
             [mysqld]
