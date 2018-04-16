@@ -49,6 +49,7 @@ def make_pod_spec():
 @when('server.database.requested')
 def provide_database(mysql):
     log('db requested')
+
     for service in mysql.requested_databases():
         log('request for {0}'.format(service))
         database = get_state('database')
