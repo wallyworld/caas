@@ -53,6 +53,7 @@ services:
     num_units: 1
     options:
       channel: 1.10/stable
+      install-cuda: false
     to:
     - '1'
 relations:
