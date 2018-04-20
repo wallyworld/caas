@@ -51,7 +51,7 @@ def provide_database(mysql):
     log('db requested')
 
     for request, application in mysql.database_requests():
-        log('request for {0}'.format(request))
+        log('request -> {0} for app -> {1}'.format(request, application))
         database_name = get_state('database')
         user = get_state('user')
         password = get_state('password')
