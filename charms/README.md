@@ -2,11 +2,10 @@
 
 ```bash
 
-charm build ./mysql -o ./
-# gitlab requires `5.7` mysql
-juju deploy ./builds/mysql --config mysql_image=mysql/mysql-server:5.7
+charm build ./mysql -o ~/.local/shared/charms/
+juju deploy ~/.local/shared/charms/builds/mysql
 
-charm build ./gitlab -o ./
-juju deploy ./builds/gitlab
+charm build ./gitlab -o ~/.local/shared/charms/
+juju deploy ~/.local/shared/charms/builds/gitlab
 
 ```
