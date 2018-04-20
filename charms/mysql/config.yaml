@@ -2,7 +2,7 @@ options:
     mysql_image:
         type: string
         description: 'The docker image of mysql to install.'
-        default: 'mysql/mysql-server:latest'
+        default: 'mysql/mysql-server:5.7'
     mysql_port:
         type: string
         description: 'The mysql port'
