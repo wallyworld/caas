@@ -50,7 +50,7 @@ def make_pod_spec():
 def provide_database(mysql):
     log('db requested')
 
-    for request, application in mysql.database_requests():
+    for request, application in mysql.database_requests().items():
         log('request -> {0} for app -> {1}'.format(request, application))
         database_name = get_state('database')
         user = get_state('user')
