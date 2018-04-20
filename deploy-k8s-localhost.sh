@@ -9,7 +9,7 @@ controller=$1
 model=$2
 k8bundle=$3
 
-#JUJU_DEV_FEATURE_FLAGS=caas,developer-mode juju bootstrap --debug lxdq $controller 
+#JUJU_DEV_FEATURE_FLAGS=caas,developer-mode juju bootstrap --debug localhost $controller
 
 juju add-model $model
 
@@ -19,7 +19,6 @@ config:
   boot.autostart: "true"
   linux.kernel_modules: ip_tables,ip6_tables,netlink_diag,nf_nat,overlay
   raw.lxc: |
-    ##AA_PROFILE##=unconfined
     lxc.apparmor.profile=unconfined
     lxc.mount.auto=proc:rw sys:rw
     lxc.cap.drop=
@@ -36,9 +35,9 @@ devices:
     source: /dev/null
     type: disk
 EOF
-       )
+)
 
-echo "$profile" | lxc profile edit juju-$model
+echo "$profile" | sed -e "s/##MODEL##/$model/" | lxc profile edit juju-$model
 
 juju deploy $k8bundle
 juju config kubernetes-worker proxy-extra-args="proxy-mode=userspace"
