@@ -18,8 +18,8 @@ def config_gitlab():
 
 
 def make_pod_spec():
-    spec_file = open('reactive/spec_template.yaml')
-    pod_spec_template = spec_file.read()
+    with open('reactive/spec_template.yaml') as spec_file:
+        pod_spec_template = spec_file.read()
 
     md = metadata()
     cfg = config()
@@ -50,21 +50,21 @@ def make_pod_spec():
 def provide_database(mysql):
     log('db requested')
 
-    for service in mysql.requested_databases():
-        log('request for {0}'.format(service))
-        database = get_state('database')
+    for request, application in mysql.database_requests():
+        log('request for {0}'.format(request))
+        database_name = get_state('database')
         user = get_state('user')
         password = get_state('password')
 
-        log('db params: {0}:{1}@{2}'.format(user, password, database))
+        log('db params: {0}:{1}@{2}'.format(user, password, database_name))
         info = network_get('server', relation_id())
         log('network info {0}'.format(info))
 
         mysql.provide_database(
-            service=service,
+            request_id=request,
             host=info['ingress-addresses'][0],
             port=3306,
-            database=database,
+            database_name=database_name,
             user=user,
             password=password,
         )

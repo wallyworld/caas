@@ -1,5 +1,6 @@
 from charms.layer.hookenv import pod_spec_set
 from charms.reactive import when, when_not
+from charms.reactive import endpoint_from_flag
 from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import log, metadata, status_set, config
 
@@ -46,9 +47,10 @@ def render_db_config(pgsql):
 
 @when('mysql.available')
 @when_not('gitlab.db.related')
-def mysql_changed(mysql):
+def mysql_changed():
     log('mysql available')
 
+    mysql = endpoint_from_flag('mysql.available')
     log('dbname {0}'.format(mysql.database()))
     log('host {0}'.format(mysql.host()))
     log('port {0}'.format(mysql.port()))
@@ -81,8 +83,8 @@ def make_db_config(dbadaptor, dbname, host, port, user, password):
 
 
 def make_pod_spec(dbcfg):
-    spec_file = open('reactive/spec_template.yaml')
-    pod_spec_template = Template(spec_file.read())
+    with open('reactive/spec_template.yaml') as spec_file:
+        pod_spec_template = Template(spec_file.read())
 
     md = metadata()
     cfg = config()
