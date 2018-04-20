@@ -1,11 +1,12 @@
 # how to deploy
 
 ```bash
+export charmBuildDir=###charm build output dir###
 
-charm build ./mysql -o ~/.local/shared/charms/
-juju deploy ~/.local/shared/charms/builds/mysql
+charm build ./mysql -o $charmBuildDir/
+juju deploy $charmBuildDir/builds/mysql
 
-charm build ./gitlab -o ~/.local/shared/charms/
-juju deploy ~/.local/shared/charms/builds/gitlab
+charm build ./gitlab -o $charmBuildDir/
+juju deploy $charmBuildDir/builds/gitlab
 
 ```
