@@ -1,4 +1,4 @@
-from charms.layer.hookenv import pod_spec_set
+from charms.layer.caas_base import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive import endpoint_from_flag
 from charms.reactive.flags import set_flag, get_state
