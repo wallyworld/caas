@@ -1,4 +1,4 @@
-from charms.layer.caas_base import pod_spec_set
+from charms.layer.basic import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import log, metadata, status_set, config,\
@@ -24,13 +24,13 @@ def make_pod_spec():
     md = metadata()
     cfg = config()
 
-    user = cfg.get('user', 'test')
+    user = cfg.get('user')
     set_flag('user', user)
-    password = cfg.get('password', 'letmein')
+    password = cfg.get('password')
     set_flag('password', password)
-    database = cfg.get('database', 'juju')
+    database = cfg.get('database')
     set_flag('database', database)
-    root_password = cfg.get('root_password', 'admin')
+    root_password = cfg.get('root_password')
     set_flag('root_password', root_password)
 
     data = {
