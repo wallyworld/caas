@@ -19,3 +19,7 @@ resources:
   mysql_image:
     type: docker
     description: "Image used for mysql pod."
+storage:
+  database:
+    type: filesystem
+    location: /var/lib/mysql
