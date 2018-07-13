@@ -1,0 +1,5 @@
+includes: 
+  - "layer:caas-base"
+  - 'interface:juju-relation-mysql'
+    
+repo: https://github.com/wallyworld/caas.git
