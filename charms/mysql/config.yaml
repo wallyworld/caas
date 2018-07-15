@@ -36,7 +36,7 @@ options:
     type: string
     description: "Query cache is usually a good idea, but can hurt concurrency.\
       \ Valid values are \"OFF\", \"ON\", or \"DEMAND\". http://dev.mysql.com/doc/refman/5.1/en/server-system-variables.html#sysvar_query_cache_type"
-  "query-cache-size:
+  query-cache-size:
     default: !!int "0"
     type: int
     description: "Override the computed version from dataset-size. Still works if\
