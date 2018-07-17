@@ -1,16 +1,4 @@
 options:
-  mysql_image:
-    type: string
-    description: 'The docker image of mysql to install.'
-    default: 'registry.staging.jujucharms.com/veebers/caas-mysql/mysql-image@sha256:eb3aa08c047efcb3e6bfcc3a28b80a2ec8c67b4315712b26679b0b22320f0b4a'
-  resource_username:
-    type: string
-    description: "Username for rego"
-    default: "docker-registry"
-  resource_password:
-    type: string
-    description: "Password for rego"
-    default: "<password from api call goes here>"
   user:
     type: string
     description: 'The database user name.'

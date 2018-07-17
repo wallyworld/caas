@@ -1,8 +1,15 @@
+import yaml
 from charms.layer.basic import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive import endpoint_from_flag
 from charms.reactive.flags import set_flag, get_state
-from charmhelpers.core.hookenv import log, metadata, status_set, config
+from charmhelpers.core.hookenv import (
+    log,
+    metadata,
+    status_set,
+    config,
+    resource_get,
+)
 
 from string import Template
 
@@ -83,6 +90,18 @@ def make_db_config(dbadaptor, dbname, host, port, user, password):
 
 
 def make_pod_spec(dbcfg):
+    # Grab the details from resource-get.
+    gitlab_image_details_path = resource_get("gitlab_image")
+    if not gitlab_image_details_path:
+        raise Exception("unable to retrieve gitlab image details")
+
+    with open(gitlab_image_details_path, "rt") as f:
+        gitlab_image_details = yaml.load(f)
+
+    docker_image_path = gitlab_image_details['registrypath']
+    docker_image_username = gitlab_image_details['username']
+    docker_image_password = gitlab_image_details['password']
+
     with open('reactive/spec_template.yaml') as spec_file:
         pod_spec_template = Template(spec_file.read())
 
@@ -90,7 +109,9 @@ def make_pod_spec(dbcfg):
     cfg = config()
     data = {
         'name': md.get('name'),
-        'image': cfg.get('gitlab_image'),
+        'docker_image_path': docker_image_path,
+        'docker_image_username': docker_image_username,
+        'docker_image_password': docker_image_password,
         'port': cfg.get('http_port'),
         'config': '; '.join([compose_config(cfg), dbcfg])
     }

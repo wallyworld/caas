@@ -42,7 +42,7 @@ def make_pod_spec():
     root_password = cfg.get('root_password')
     set_flag('root_password', root_password)
 
-    # Grab the details from resource-get, untested.
+    # Grab the details from resource-get.
     mysql_image_details_path = resource_get("mysql_image")
     if not mysql_image_details_path:
         raise Exception("unable to retrieve mysql image details")

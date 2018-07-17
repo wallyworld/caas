@@ -10,12 +10,16 @@ tags:
   - version_control
   - application
 provides:
-    website:
-      interface: http
+  website:
+    interface: http
 requires:
-    pgsql:
-      interface: pgsql      
-    mysql:
-      interface: mysql      
+  pgsql:
+    interface: pgsql
+  mysql:
+    interface: mysql
 series:
    - kubernetes
+resources:
+  gitlab_image:
+    type: docker
+    description: "Image used for gitlab pod."
