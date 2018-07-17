@@ -1,6 +1,9 @@
 containers:
   - name: $name
-    image: $image
+    imageDetails:
+      imagePath: $docker_image_path
+      username: $docker_image_username
+      password: $docker_image_password
     ports:
     - containerPort: $port
       protocol: TCP

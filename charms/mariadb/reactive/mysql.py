@@ -1,8 +1,17 @@
+import yaml
+
 from charms.layer.basic import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive.flags import set_flag, get_state
-from charmhelpers.core.hookenv import log, metadata, status_set, config,\
-     network_get, relation_id
+from charmhelpers.core.hookenv import (
+    log,
+    metadata,
+    status_set,
+    config,
+    network_get,
+    relation_id,
+    resource_get,
+)
 
 
 @when_not('mysql.configured')
@@ -33,9 +42,23 @@ def make_pod_spec():
     root_password = cfg.get('root_password')
     set_flag('root_password', root_password)
 
+    # Grab the details from resource-get.
+    mysql_image_details_path = resource_get("mysql_image")
+    if not mysql_image_details_path:
+        raise Exception("unable to retrieve mysql image details")
+
+    with open(mysql_image_details_path, "rt") as f:
+        mysql_image_details = yaml.load(f)
+
+    docker_image_path = mysql_image_details['registrypath']
+    docker_image_username = mysql_image_details['username']
+    docker_image_password = mysql_image_details['password']
+
     data = {
         'name': md.get('name'),
-        'image': cfg.get('mariadb_image'),
+        'docker_image_path': docker_image_path,
+        'docker_image_username': docker_image_username,
+        'docker_image_password': docker_image_password,
         'port': cfg.get('mysql_port'),
         'user': user,
         'password': password,

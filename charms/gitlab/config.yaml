@@ -1,8 +1,4 @@
 options:
-  gitlab_image:
-    type: string
-    description: 'The docker image of GitLab to install.'
-    default: 'gitlab/gitlab-ee:10.6.4-ee.0'
   external_url:
     type: string
     description: 'The FQDN for your GitLab unit'
