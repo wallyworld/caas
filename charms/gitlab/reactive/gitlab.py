@@ -1,5 +1,5 @@
-import yaml
-from charms.layer.basic import pod_spec_set
+from string import Template
+
 from charms.reactive import when, when_not
 from charms.reactive import endpoint_from_flag
 from charms.reactive.flags import set_flag, get_state
@@ -8,10 +8,14 @@ from charmhelpers.core.hookenv import (
     metadata,
     status_set,
     config,
-    resource_get,
 )
 
-from string import Template
+from charm import layer
+
+
+@when_not('layer.docker-resource.gitlab_image.fetched')
+def fetch_image():
+    layer.docker_resource.fetch('gitlab_image')
 
 
 @when_not('gitlab.db.related')
@@ -21,6 +25,7 @@ def gitlab_blocked():
 
 @when_not('gitlab.configured')
 @when('gitlab.db.related')
+@when('layer.docker-resource.gitlab_image.available')
 def config_gitlab():
     dbcfg = get_state('gitlab.db.config')
     log('got db {0}'.format(dbcfg))
@@ -29,7 +34,7 @@ def config_gitlab():
 
     spec = make_pod_spec(dbcfg)
     log('set pod spec:\n{}'.format(spec))
-    pod_spec_set(spec)
+    layer.caas_base.pod_spec_set(spec)
 
     set_flag('gitlab.configured')
     status_set('maintenance', 'Creating Gitlab container')
@@ -90,17 +95,7 @@ def make_db_config(dbadaptor, dbname, host, port, user, password):
 
 
 def make_pod_spec(dbcfg):
-    # Grab the details from resource-get.
-    gitlab_image_details_path = resource_get("gitlab_image")
-    if not gitlab_image_details_path:
-        raise Exception("unable to retrieve gitlab image details")
-
-    with open(gitlab_image_details_path, "rt") as f:
-        gitlab_image_details = yaml.load(f)
-
-    docker_image_path = gitlab_image_details['registrypath']
-    docker_image_username = gitlab_image_details['username']
-    docker_image_password = gitlab_image_details['password']
+    image_info = layer.docker_resource.get_info('gitlab_image')
 
     with open('reactive/spec_template.yaml') as spec_file:
         pod_spec_template = Template(spec_file.read())
@@ -109,9 +104,9 @@ def make_pod_spec(dbcfg):
     cfg = config()
     data = {
         'name': md.get('name'),
-        'docker_image_path': docker_image_path,
-        'docker_image_username': docker_image_username,
-        'docker_image_password': docker_image_password,
+        'docker_image_path': image_info.registry_path,
+        'docker_image_username': image_info.username,
+        'docker_image_password': image_info.password,
         'port': cfg.get('http_port'),
         'config': '; '.join([compose_config(cfg), dbcfg])
     }
