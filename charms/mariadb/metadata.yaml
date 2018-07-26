@@ -12,7 +12,7 @@ tags:
   - openstack
 provides:
     server:
-      interface: mysql      
+      interface: mysql
 series:
    - kubernetes
 resources:
