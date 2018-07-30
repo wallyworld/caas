@@ -8,7 +8,7 @@ from charmhelpers.core.hookenv import (
     config,
 )
 
-from charm import layer
+from charms import layer
 
 
 @when_not('layer.docker-resource.gitlab_image.fetched')
@@ -108,7 +108,7 @@ def make_pod_spec(dbcfg):
         'port': cfg.get('http_port'),
         'config': '; '.join([compose_config(cfg), dbcfg])
     }
-    return pod_spec_template %data
+    return pod_spec_template % data
 
 
 def isfloat(value):
