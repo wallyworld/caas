@@ -10,7 +10,7 @@ from charmhelpers.core.hookenv import (
     config,
 )
 
-from charm import layer
+from charms import layer
 
 
 @when_not('layer.docker-resource.gitlab_image.fetched')
