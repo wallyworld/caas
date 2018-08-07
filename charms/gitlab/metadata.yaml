@@ -21,5 +21,5 @@ series:
    - kubernetes
 resources:
   gitlab_image:
-    type: docker
+    type: oci-image
     description: "Image used for gitlab pod."
