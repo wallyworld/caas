@@ -1,4 +1,4 @@
-name: mysql
+name: mysql-k8s
 summary: MySQL is a fast, stable and true multi-user, multi-threaded SQL database
 maintainers:
   - Juju Developers <juju@lists.ubuntu.com>

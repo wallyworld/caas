@@ -1,4 +1,4 @@
-name: gitlab
+name: gitlab-k8s
 summary: Gitlab EE charm for Kubernetes.
 maintainers:
   - Juju Developers <juju@lists.ubuntu.com>
