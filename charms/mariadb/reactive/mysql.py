@@ -1,6 +1,3 @@
-import yaml
-
-from charms.layer.caas_base import pod_spec_set
 from charms.reactive import when, when_not
 from charms.reactive.flags import set_flag, get_state
 from charmhelpers.core.hookenv import (
@@ -10,17 +7,25 @@ from charmhelpers.core.hookenv import (
     config,
     network_get,
     relation_id,
-    resource_get,
 )
 
 
+from charms import layer
+
+
+@when_not('layer.docker-resource.mysql_image.fetched')
+def fetch_image():
+    layer.docker_resource.fetch('mysql_image')
+
+
+@when('layer.docker-resource.mysql_image.available')
 @when_not('mysql.configured')
-def config_gitlab():
+def config_mariadb():
     status_set('maintenance', 'Configuring mysql container')
 
     spec = make_pod_spec()
     log('set pod spec:\n{}'.format(spec))
-    pod_spec_set(spec)
+    layer.caas_base.pod_spec_set(spec)
 
     set_flag('mysql.configured')
     status_set('maintenance', 'Creating mysql container')
@@ -42,23 +47,13 @@ def make_pod_spec():
     root_password = cfg.get('root_password')
     set_flag('root_password', root_password)
 
-    # Grab the details from resource-get.
-    mysql_image_details_path = resource_get("mysql_image")
-    if not mysql_image_details_path:
-        raise Exception("unable to retrieve mysql image details")
-
-    with open(mysql_image_details_path, "rt") as f:
-        mysql_image_details = yaml.load(f)
-
-    docker_image_path = mysql_image_details['registrypath']
-    docker_image_username = mysql_image_details['username']
-    docker_image_password = mysql_image_details['password']
+    image_info = layer.docker_resource.get_info('mysql_image')
 
     data = {
         'name': md.get('name'),
-        'docker_image_path': docker_image_path,
-        'docker_image_username': docker_image_username,
-        'docker_image_password': docker_image_password,
+        'docker_image_path': image_info.registry_path,
+        'docker_image_username': image_info.username,
+        'docker_image_password': image_info.password,
         'port': cfg.get('mysql_port'),
         'user': user,
         'password': password,
