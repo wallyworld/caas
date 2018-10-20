@@ -12,6 +12,7 @@ from charms import layer
 
 
 @when_not('layer.docker-resource.gitlab_image.fetched')
+@when('gitlab.db.related')
 def fetch_image():
     layer.docker_resource.fetch('gitlab_image')
 
