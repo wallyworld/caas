@@ -1,5 +1,5 @@
 from charms.reactive import when, when_not
-from charms.reactive.flags import set_flag, get_state
+from charms.reactive.flags import set_flag, get_state, clear_flag
 from charmhelpers.core.hookenv import (
     log,
     metadata,
@@ -64,6 +64,7 @@ def make_pod_spec():
     return pod_spec_template % data
 
 
+@when('mysql.configured')
 @when('server.database.requested')
 def provide_database(mysql):
     log('db requested')
@@ -86,3 +87,4 @@ def provide_database(mysql):
             user=user,
             password=password,
         )
+        clear_flag('server.database.requested')
