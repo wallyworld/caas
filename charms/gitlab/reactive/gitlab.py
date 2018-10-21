@@ -18,8 +18,15 @@ def fetch_image():
 
 
 @when_not('gitlab.db.related')
+@when_not('gitlab.configured')
 def gitlab_blocked():
     status_set('blocked', 'Waiting for database')
+
+
+@when('gitlab.db.related')
+@when('gitlab.configured')
+def gitlab_active():
+    status_set('active', '')
 
 
 @when_not('gitlab.configured')
@@ -36,7 +43,6 @@ def config_gitlab():
     layer.caas_base.pod_spec_set(spec)
 
     set_flag('gitlab.configured')
-    status_set('maintenance', 'Creating Gitlab container')
 
 
 @when('pgsql.master.available')

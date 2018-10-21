@@ -18,6 +18,11 @@ def fetch_image():
     layer.docker_resource.fetch('mysql_image')
 
 
+@when('mysql.configured')
+def mariadb_active():
+    status_set('active', '')
+
+
 @when('layer.docker-resource.mysql_image.available')
 @when_not('mysql.configured')
 def config_mariadb():
@@ -28,7 +33,6 @@ def config_mariadb():
     layer.caas_base.pod_spec_set(spec)
 
     set_flag('mysql.configured')
-    status_set('maintenance', 'Creating mysql container')
 
 
 def make_pod_spec():
