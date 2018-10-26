@@ -18,9 +18,14 @@ def fetch_image():
     layer.docker_resource.fetch('mysql_image')
 
 
+@when('mysql.configured')
+def mysqlb_active():
+    status_set('active', '')
+
+
 @when('layer.docker-resource.mysql_image.available')
 @when_not('mysql.configured')
-def config_gitlab():
+def config_mysql():
     status_set('maintenance', 'Configuring mysql container')
 
     spec = make_pod_spec()
@@ -28,7 +33,6 @@ def config_gitlab():
     layer.caas_base.pod_spec_set(spec)
 
     set_flag('mysql.configured')
-    status_set('maintenance', 'Creating mysql container')
 
 
 def make_pod_spec():
@@ -64,9 +68,17 @@ def make_pod_spec():
     return pod_spec_template % data
 
 
+@when('mysql.configured')
 @when('server.database.requested')
 def provide_database(mysql):
     log('db requested')
+
+    info = network_get('server', relation_id())
+    log('network info {0}'.format(info))
+    host = info['ingress-addresses'][0]
+    if host == "":
+        log("no service address yet")
+        return
 
     for request, application in mysql.database_requests().items():
         log('request -> {0} for app -> {1}'.format(request, application))
@@ -75,14 +87,14 @@ def provide_database(mysql):
         password = get_state('password')
 
         log('db params: {0}:{1}@{2}'.format(user, password, database_name))
-        info = network_get('server', relation_id())
-        log('network info {0}'.format(info))
 
         mysql.provide_database(
             request_id=request,
-            host=info['ingress-addresses'][0],
+            host=host,
             port=3306,
             database_name=database_name,
             user=user,
             password=password,
         )
+        clear_flag('server.database.requested')
+
