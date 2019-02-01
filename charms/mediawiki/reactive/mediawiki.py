@@ -67,9 +67,9 @@ def make_pod_spec(dbcfg):
         'docker_image_username': image_info.username,
         'docker_image_password': image_info.password,
         'http_port': cfg.get('http_port'),
+        'host': mysql.host(),
         'database': mysql.database(),
         'user': mysql.user(),
         'password': mysql.password(),
-        'root_password': cfg.get('root_password')
     }
     return pod_spec_template % data

@@ -8,7 +8,8 @@ containers:
     - containerPort: %(http_port)s
       protocol: TCP
     config:
-      MYSQL_ROOT_PASSWORD: %(root_password)s
-      MYSQL_USER: %(user)s
-      MYSQL_PASSWORD: %(password)s
-      MYSQL_DATABASE: %(database)s
+      MARIADB_HOST: %(host)s
+      MEDIAWIKI_DATABASE_USER: %(user)s
+      MEDIAWIKI_DATABASE_PASSWORD: %(password)s
+      MEDIAWIKI_DATABASE_NAME: %(database)s
+      MARIADB_PORT_NUMBER: 3306
