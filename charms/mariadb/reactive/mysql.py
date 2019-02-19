@@ -80,8 +80,8 @@ def provide_database(mysql):
 
     info = network_get('server', relation_id())
     log('network info {0}'.format(info))
-    host = info['ingress-addresses'][0]
-    if host == "":
+    host = info.get('ingress-addresses', [""])[0]
+    if not host:
         log("no service address yet")
         return
 
