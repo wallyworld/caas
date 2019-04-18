@@ -1,4 +1,4 @@
-from charms.reactive import when, when_not
+from charms.reactive import when, when_not, hook
 from charms.reactive.flags import set_flag, get_state, clear_flag
 from charmhelpers.core.hookenv import (
     log,
@@ -21,6 +21,11 @@ def fetch_image():
 @when('mysql.configured')
 def mariadb_active():
     status_set('active', '')
+
+
+@hook('upgrade-charm')
+def upgrade():
+    clear_flag('mysql.configured')
 
 
 @when('layer.docker-resource.mysql_image.available')

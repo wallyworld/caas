@@ -1,6 +1,6 @@
-from charms.reactive import when, when_not
+from charms.reactive import when, when_not, hook
 from charms.reactive import endpoint_from_flag
-from charms.reactive.flags import set_flag, get_state
+from charms.reactive.flags import set_flag, get_state, clear_flag
 from charmhelpers.core.hookenv import (
     log,
     metadata,
@@ -27,6 +27,11 @@ def gitlab_blocked():
 @when('gitlab.configured')
 def gitlab_active():
     status_set('active', '')
+
+
+@hook('upgrade-charm')
+def upgrade():
+    clear_flag('gitlab.configured')
 
 
 @when_not('gitlab.configured')
