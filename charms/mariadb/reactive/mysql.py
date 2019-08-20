@@ -89,7 +89,7 @@ def provide_database(mysql):
     for request, application in mysql.database_requests().items():
         log('request -> {0} for app -> {1}'.format(request, application))
 
-        log('db params: {0}:{1}@{2}'.format(user, password, database))
+        log('db params: {0}:...@{1}'.format(user, database))
 
         mysql.provide_database(
             request_id=request,
