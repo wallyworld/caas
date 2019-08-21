@@ -1,5 +1,5 @@
 from charms.reactive import when, when_not
-from charms.reactive.flags import set_flag, get_state
+from charms.reactive import set_flag, clear_flag
 from charmhelpers.core.hookenv import (
     log,
     metadata,
@@ -43,13 +43,9 @@ def make_pod_spec():
     cfg = config()
 
     user = cfg.get('user')
-    set_flag('user', user)
     password = cfg.get('password')
-    set_flag('password', password)
     database = cfg.get('database')
-    set_flag('database', database)
     root_password = cfg.get('root_password')
-    set_flag('root_password', root_password)
 
     image_info = layer.docker_resource.get_info('mysql_image')
 
@@ -75,26 +71,27 @@ def provide_database(mysql):
 
     info = network_get('server', relation_id())
     log('network info {0}'.format(info))
-    host = info['ingress-addresses'][0]
-    if host == "":
+    host = info.get('ingress-addresses', [""])[0]
+    if not host:
         log("no service address yet")
         return
 
+    cfg = config()
+    user = cfg.get('user')
+    password = cfg.get('password')
+    database = cfg.get('database')
+
     for request, application in mysql.database_requests().items():
         log('request -> {0} for app -> {1}'.format(request, application))
-        database_name = get_state('database')
-        user = get_state('user')
-        password = get_state('password')
 
-        log('db params: {0}:{1}@{2}'.format(user, password, database_name))
+        log('db params: {0}:...@{1}'.format(user, database))
 
         mysql.provide_database(
             request_id=request,
             host=host,
             port=3306,
-            database_name=database_name,
+            database_name=database,
             user=user,
             password=password,
         )
         clear_flag('server.database.requested')
-
