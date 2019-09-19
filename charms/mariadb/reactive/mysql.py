@@ -7,6 +7,7 @@ from charmhelpers.core.hookenv import (
     config,
     network_get,
     relation_id,
+    is_leader,
 )
 
 
@@ -31,6 +32,9 @@ def upgrade():
 @when('layer.docker-resource.mysql_image.available')
 @when_not('mysql.configured')
 def config_mariadb():
+    if not is_leader():
+        return
+    
     status_set('maintenance', 'Configuring mysql container')
 
     spec = make_pod_spec()
